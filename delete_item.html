@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Delete Item | Inventory System</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    let index = -1;
+    let itemName = "";
+
+    window.onload = function() {
+      const params = new URLSearchParams(window.location.search);
+      index = parseInt(params.get("id"));
+      const items = JSON.parse(localStorage.getItem("inventory")) || [];
+
+      if (isNaN(index) || !items[index]) {
+        alert("Item not found!");
+        window.location.href = "dashboard.html";
+        return;
+      }
+
+      itemName = items[index].name;
+      document.getElementById("itemNameDisplay").innerText = `"${itemName}"`;
+    };
+
+    function confirmDelete() {
+      const items = JSON.parse(localStorage.getItem("inventory")) || [];
+      if (isNaN(index) || !items[index]) return;
+
+      items.splice(index, 1);
+      localStorage.setItem("inventory", JSON.stringify(items));
+
+      alert("Item deleted successfully!");
+      window.location.href = "dashboard.html";
+    }
+
+    function cancelDelete() {
+      window.location.href = "dashboard.html";
+    }
+  </script>
+</head>
+<body>
+  <div class="container card" style="max-width: 500px; margin-top: 80px; text-align:center;">
+    <h2 style="margin-bottom: 15px;">Delete Item</h2>
+    <p style="font-size:1.1rem; margin-bottom: 25px;">
+      Are you sure you want to delete <strong id="itemNameDisplay">this item</strong>?
+    </p>
+    <div>
+      <button class="btn danger" onclick="confirmDelete()">Yes, Delete</button>
+      <button class="btn ghost" onclick="cancelDelete()">Cancel</button>
+    </div>
+  </div>
+</body>
+</html>

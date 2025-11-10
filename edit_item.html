@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Item | Inventory System</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    window.onload = () => {
+      const index = new URLSearchParams(window.location.search).get('id');
+      const items = JSON.parse(localStorage.getItem('inventory')) || [];
+      if(!items[index]) {
+        alert("Item not found!");
+        window.location.href = "dashboard.html";
+        return;
+      }
+      document.getElementById('name').value = items[index].name;
+      document.getElementById('qty').value = items[index].quantity;
+      document.getElementById('price').value = items[index].price;
+      document.getElementById('saveBtn').onclick = function(){
+        items[index] = {
+          name: document.getElementById('name').value,
+          quantity: parseFloat(document.getElementById('qty').value),
+          price: parseFloat(document.getElementById('price').value)
+        };
+        localStorage.setItem('inventory', JSON.stringify(items));
+        alert('Item updated!');
+        window.location.href = 'dashboard.html';
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="auth">
+    <h1>Edit Item</h1>
+    <label>Item Name
+      <input type="text" id="name">
+    </label>
+    <label>Quantity
+      <input type="number" id="qty">
+    </label>
+    <label>Price
+      <input type="number" id="price">
+    </label>
+    <button id="saveBtn" class="btn">Save Changes</button>
+    <p><a href="dashboard.html">← Back to Dashboard</a></p>
+  </div>
+</body>
+</html>

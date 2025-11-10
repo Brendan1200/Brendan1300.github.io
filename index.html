@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login | Inventory System</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/setting.js"></script>
+</head>
+<body>
+  <div class="auth">
+    <h1>Login</h1>
+    <form id="loginForm">
+      <label>Username
+        <input type="text" id="username" required>
+      </label>
+      <label>Password
+        <input type="password" id="password" required>
+      </label>
+      <button type="submit" class="btn full">Login</button>
+      <p>No account? <a href="register.html">Register</a></p>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", async e => {
+      e.preventDefault();
+
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!username || !password) {
+        alert("Please fill in both fields!");
+        return;
+      }
+
+      try {
+        const res = await fetch("http://localhost:3000/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+        });
+
+        if (!res.ok) {
+          const errData = await res.json();
+          alert(errData.message || "Invalid username or password!");
+          return;
+        }
+
+        const data = await res.json();
+
+        // Save logged-in user info in localStorage
+        localStorage.setItem("currentUser", JSON.stringify({
+          username: data.username,
+          role: data.role
+        }));
+
+        // Redirect based on role
+        switch (data.role) {
+          case "admin":
+            window.location.href = "admin.html";
+            break;
+          case "staff":
+            window.location.href = "staff.html";
+            break;
+          default:
+            window.location.href = "dashboard.html";
+        }
+
+      } catch (err) {
+        console.error(err);
+        alert("⚠️ Cannot connect to server. Make sure Node.js is running!");
+      }
+    });
+  </script>
+</body>
+</html>
+s

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Staff Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard">
+    <h1>Welcome, Staff!</h1>
+    <p>You can manage daily operations and view data.</p>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+
+    if (!user || user.role !== "staff") {
+      alert("Access denied! You are not staff.");
+      window.location.href = "login.html";
+    }
+
+    function logout() {
+      localStorage.removeItem("currentUser");
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>

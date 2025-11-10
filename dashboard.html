@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard | Inventory System</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/setting.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <h2>📦 Inventory Dashboard</h2>
+      <div>
+        <span>Welcome, <strong id="username"></strong></span>
+        <button class="btn small ghost" onclick="toggleTheme()">🌓</button>
+        <button class="btn small danger" onclick="logout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Add New Item</h3>
+      <form id="itemForm">
+        <label>Item Name <input type="text" id="itemName" required></label>
+        <label>Quantity <input type="number" id="itemQty" min="1" required></label>
+        <label>Price (RM) <input type="number" id="itemPrice" step="0.01" min="0.01" required></label>
+        <button type="submit" class="btn full">Add Item</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h3>Inventory List</h3>
+      <table class="table">
+        <thead>
+          <tr><th>#</th><th>Item</th><th>Qty</th><th>Price</th><th>Total</th><th>Action</th></tr>
+        </thead>
+        <tbody id="inventoryBody"></tbody>
+      </table>
+    </div>
+
+    <div class="controls">
+      <a href="calculator.html" class="btn">🧮 Calculator</a>
+    </div>
+  </div>
+
+  <footer>© 2025 Inventory Management System | Rex_Ho</footer>
+
+  <script>
+    // ===== Role-based Access =====
+    function getCurrentUser() {
+      return JSON.parse(localStorage.getItem("currentUser"));
+    }
+
+    function requireLogin() {
+      const user = getCurrentUser();
+      if (!user) {
+        alert("Please login first!");
+        window.location.href = "login.html";
+      } else if (user.role !== "user") {
+        alert("Access denied! Only regular users can access this dashboard.");
+        if (user.role === "admin") window.location.href = "admin.html";
+        else if (user.role === "staff") window.location.href = "staff.html";
+        else window.location.href = "login.html";
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("currentUser");
+      window.location.href = "login.html";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      requireLogin();
+      const user = getCurrentUser();
+      document.getElementById("username").textContent = user.username;
+      loadInventory();
+    });
+
+    // ===== Inventory Management =====
+    function loadInventory() {
+      const items = JSON.parse(localStorage.getItem("inventory")) || [];
+      const body = document.getElementById("inventoryBody");
+      body.innerHTML = items.length ? "" : "<tr><td colspan='6'>No items</td></tr>";
+
+      items.forEach((item, i) => {
+        body.innerHTML += `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${item.name}</td>
+            <td>${item.quantity}</td>
+            <td>RM ${item.price.toFixed(2)}</td>
+            <td>RM ${(item.quantity * item.price).toFixed(2)}</td>
+            <td>
+              <a href="edit_item.html?id=${i}" class="btn small">Edit</a>
+              <a href="delete_item.html?id=${i}" class="btn small danger">Delete</a>
+            </td>
+          </tr>`;
+      });
+    }
+
+    document.getElementById("itemForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const name = document.getElementById("itemName").value.trim();
+      const quantity = parseFloat(document.getElementById("itemQty").value);
+      const price = parseFloat(document.getElementById("itemPrice").value);
+
+      const items = JSON.parse(localStorage.getItem("inventory")) || [];
+      items.push({ name, quantity, price });
+      localStorage.setItem("inventory", JSON.stringify(items));
+
+      document.getElementById("itemForm").reset();
+      loadInventory();
+    });
+  </script>
+</body>
+</html>
+sss

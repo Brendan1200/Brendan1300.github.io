@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Item - Inventory System</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    function saveItem(e){
+      e.preventDefault();
+      const name = document.getElementById('itemName').value.trim();
+      // Changed 'qty' to 'quantity' for consistency
+      const quantity = parseInt(document.getElementById('itemQty').value); 
+      const price = parseFloat(document.getElementById('itemPrice').value);
+
+      if(!name){ alert('Item name required.'); return; }
+
+      const items = JSON.parse(localStorage.getItem('inventory')) || [];
+      items.push({ name, quantity, price }); 
+      localStorage.setItem('inventory', JSON.stringify(items));
+
+      alert('Item added successfully!');
+      window.location.href = 'dashboard.html';
+    }
+  </script>
+</head>
+<body>
+  <div class="container auth">
+    <h1>Add New Item</h1>
+    <form onsubmit="saveItem(event)">
+      <label>Item Name
+        <input type="text" id="itemName" required>
+      </label>
+      <label>Quantity
+        <input type="number" id="itemQty" min="0" required>
+      </label>
+      <label>Price (per unit)
+        <input type="number" id="itemPrice" step="0.01" min="0" required>
+      </label>
+      <button type="submit">Save</button>
+      <a href="dashboard.html" class="btn ghost">Cancel</a>
+    </form>
+  </div>
+</body>
+</html>

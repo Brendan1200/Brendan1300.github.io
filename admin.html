@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard">
+    <h1>Welcome, Admin!</h1>
+    <p>You have full access to manage users and settings.</p>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+
+    if (!user || user.role !== "admin") {
+      alert("Access denied! You are not an admin.");
+      window.location.href = "login.html";
+    }
+
+    function logout() {
+      localStorage.removeItem("currentUser");
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>

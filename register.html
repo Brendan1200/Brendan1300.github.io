@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register | Inventory System</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="auth">
+    <h1>Register</h1>
+
+    <form id="registerForm">
+      <label>Username
+        <input type="text" id="user" required>
+      </label>
+
+      <label>Password
+        <input type="password" id="pass" required>
+      </label>
+
+      <label>Role
+        <select id="role" required>
+          <option value="user">User</option>
+          <option value="staff">Staff</option>
+          <option value="admin">Admin</option>
+        </select>
+      </label>
+
+      <button type="submit" class="btn full">Register</button>
+      <p>Already have an account? <a href="login.html">Login</a></p>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("registerForm").addEventListener("submit", async e => {
+      e.preventDefault();
+
+      const username = document.getElementById("user").value.trim();
+      const password = document.getElementById("pass").value.trim();
+      const role = document.getElementById("role").value;
+
+      if (!username || !password) {
+        alert("Please fill in all fields!");
+        return;
+      }
+
+      try {
+        const res = await fetch("http://localhost:5000/api/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password, role })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          alert("✅ Registration successful!");
+          window.location.href = "login.html";
+        } else {
+          alert("⚠️ " + (data.message || "Registration failed."));
+        }
+      } catch (err) {
+        console.error(err);
+        alert("❌ Cannot connect to server. Please make sure Node.js is running!");
+      }
+    });
+  </script>
+</body>
+</html>
+s
